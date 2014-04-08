@@ -1,6 +1,6 @@
 #include "camera.h"
 
-Camera::Camera(int id, ros::NodeHandle nh)
+Camera::Camera(Camera::CameraId id, ros::NodeHandle nh)
 {
     hmin = 0;
     hmax = 100;
@@ -103,9 +103,9 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
     cv::waitKey(3);
 }
 
-void Camera::request(int request_type)
+void Camera::request(Camera::RequestType request_type)
 {
-    if(STATUS_AVAILABLE)
+    if(request_status == STATUS_AVAILABLE)
     {
         this->request_type = request_type;
         request_status = STATUS_REQUESTING;
@@ -114,7 +114,7 @@ void Camera::request(int request_type)
 
 bool Camera::isResultAvailable()
 {
-    if(STATUS_AVAILABLE)
+    if(request_status == STATUS_AVAILABLE)
         return true;
     else
         return false;

@@ -1,3 +1,4 @@
+#include <ros/ros.h>
 #include <baxter_core_msgs/ITBState.h>
 
 class BaxterController

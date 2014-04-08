@@ -17,7 +17,7 @@ void BaxterController::itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg
         action = ACTION_WHEEL_CLICKED;
 }
 
-int BaxterController::getAction()
+BaxterController::BaxterAction BaxterController::getAction()
 {
     BaxterAction t = action;
     action = ACTION_NOTHING;

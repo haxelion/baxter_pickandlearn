@@ -19,7 +19,7 @@ public:
     enum RequestType {REQUEST_SELECTED_SHAPE, REQUEST_SHAPES};
     enum RequestStatus {STATUS_AVAILABLE, STATUS_REQUESTING, STATUS_IN_PROGRESS};
 
-    Camera(int id, ros::NodeHandle nh);
+    Camera(CameraId id, ros::NodeHandle nh);
     ~Camera();
     void callback(const sensor_msgs::ImageConstPtr &msg);
     void request(RequestType request_type);
