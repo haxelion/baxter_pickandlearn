@@ -1,19 +1,24 @@
 #include <ros/ros.h>
 #include <baxter_core_msgs/ITBState.h>
+#include <baxter_core_msgs/EndEffectorState.h>
 #include <baxter_core_msgs/EndEffectorCommand.h>
 
 class BaxterController
 {
 public:
-    enum BaxterAction {ACTION_NOTHING, ACTION_WHEEL_CLICKED};
+    enum ITBInput {INPUT_NOTHING, INPUT_WHEEL_CLICKED};
     BaxterController(ros::NodeHandle nh);
     ~BaxterController();
     void itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg);
-    BaxterAction getAction();
+    void gripperCallback(const baxter_core_msgs::EndEffectorState &msg);
+    ITBInput getInput();
+    void grip();
+    void release();
 
 private:
     ros::NodeHandle nh;
-    ros::Subscriber itb_sub;
-    baxter_core_msgs::EndEffectorCommand end_effector_command;
-    BaxterAction action;
+    ros::Subscriber itb_sub, gripper_sub;
+    ros::Publisher gripper_pub;
+    ITBInput input = INPUT_NOTHING;
+    unsigned int gripper_hid = 0;
 };

@@ -14,8 +14,8 @@ int main(int argc, char **argv)
     while(true)
     {
         ros::spinOnce();
-        BaxterController::BaxterAction action = robot->getAction();
-        if(action == BaxterController::ACTION_WHEEL_CLICKED)
+        BaxterController::ITBInput input = robot->getInput();
+        if(input == BaxterController::INPUT_WHEEL_CLICKED)
         {
             camera->request(Camera::REQUEST_SELECTED_SHAPE);
             state = 1;
