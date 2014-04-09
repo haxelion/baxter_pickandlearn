@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <baxter_core_msgs/ITBState.h>
+#include <baxter_core_msgs/EndEffectorCommand.h>
 
 class BaxterController
 {
@@ -13,5 +14,6 @@ public:
 private:
     ros::NodeHandle nh;
     ros::Subscriber itb_sub;
+    baxter_core_msgs::EndEffectorCommand end_effector_command;
     BaxterAction action;
 };
