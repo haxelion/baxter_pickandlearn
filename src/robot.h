@@ -1,7 +1,10 @@
+#include <time.h>
 #include <ros/ros.h>
 #include <baxter_core_msgs/ITBState.h>
 #include <baxter_core_msgs/EndEffectorState.h>
 #include <baxter_core_msgs/EndEffectorCommand.h>
+
+const clock_t INPUT_BLOCKING_TIME = CLOCKS_PER_SEC/2;
 
 class BaxterController
 {
@@ -20,5 +23,6 @@ private:
     ros::Subscriber itb_sub, gripper_sub;
     ros::Publisher gripper_pub;
     ITBInput input;
+    clock_t last_input_time;
     unsigned int gripper_hid;
 };

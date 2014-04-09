@@ -90,7 +90,7 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
             if(request_status == STATUS_IN_PROGRESS)
             {
                 if(request_type == REQUEST_SELECTED_SHAPE)
-                    if(cv::pointPolygonTest(contours[i], cv::Point(800, 200), false) != -1)
+                    if(cv::pointPolygonTest(contours[i], cv::Point(666, 240), false) != -1)
                         request_result->push_back(std::vector<cv::Point>(contours[i]));
                 else if(request_type == REQUEST_SHAPES)
                     request_result->push_back(std::vector<cv::Point>(contours[i]));
