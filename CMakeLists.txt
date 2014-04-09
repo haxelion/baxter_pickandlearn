@@ -106,7 +106,7 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(pickandlearn src/pickandlearn.cpp src/robot.cpp src/camera.cpp)
+add_executable(pickandlearn src/pickandlearn.cpp src/baxtercontroller.cpp src/baxtercontroller.cpp)
 add_executable(snapshot src/snapshot.cpp)
 
 ## Add cmake target dependencies of the executable/library
