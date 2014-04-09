@@ -19,6 +19,6 @@ private:
     ros::NodeHandle nh;
     ros::Subscriber itb_sub, gripper_sub;
     ros::Publisher gripper_pub;
-    ITBInput input = INPUT_NOTHING;
-    unsigned int gripper_hid = 0;
+    ITBInput input;
+    unsigned int gripper_hid;
 };

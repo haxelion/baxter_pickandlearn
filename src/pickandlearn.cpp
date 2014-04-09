@@ -39,6 +39,7 @@ int main(int argc, char **argv)
                         std::cout << ",(" << (*result)[i][j].x << "," << (*result)[i][j].y << ")";
                     std::cout << "]" << std::endl;
                 }
+                robot->grip();
             }
         }
     }

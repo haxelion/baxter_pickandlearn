@@ -2,6 +2,8 @@
 
 BaxterController::BaxterController(ros::NodeHandle nh)
 {
+    input = INPUT_NOTHING;
+    gripper_hid = 0;
     this->nh = nh;
     std::cout << "Registrating ITB callbacks: ";
     itb_sub = nh.subscribe("/robot/itb/right_itb/state", 2, &BaxterController::itbCallback, this);
@@ -36,7 +38,7 @@ BaxterController::~BaxterController()
 void BaxterController::itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg)
 {
     if(msg->buttons[0])
-        action = INPUT_WHEEL_CLICKED;
+        input = INPUT_WHEEL_CLICKED;
 }
 
 void BaxterController::gripperCallback(const baxter_core_msgs::EndEffectorState &msg)
@@ -53,7 +55,7 @@ void BaxterController::gripperCallback(const baxter_core_msgs::EndEffectorState 
 
 BaxterController::ITBInput BaxterController::getInput()
 {
-    BaxterITB t = input;
+    ITBInput t = input;
     input = INPUT_NOTHING;
     return t;
 }
