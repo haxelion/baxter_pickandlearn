@@ -1,6 +1,8 @@
 #include <ros/ros.h>
+#include <vector>
 #include "baxtercontroller.h"
 #include "camera.h"
+#include "object.cpp"
 
 int main(int argc, char **argv)
 {
@@ -9,6 +11,8 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     BaxterController *robot = new BaxterController(nh);
     Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh);
+    std::vector<Object> *objects = new std::vector<Object>;
+    camera->setHighlightObjects(objects);
     int state = 0;
     while(true)
     {
@@ -21,29 +25,16 @@ int main(int argc, char **argv)
         }
         else if(state == 1 && camera->isResultAvailable())
         {
-            float position[3], orientation[4];
             state = 2;
-            robot->getPosition(position);
-            robot->getOrientation(position);
-            std::cout << "Position:";
-            for(int i = 0; i<3; i++)
-                std::cout << " " << position[i];
-            std::cout << std::endl;
-            std::cout << "Orientation:";
-            for(int i = 0; i<3; i++)
-                std::cout << " " << orientation[i];
-            std::cout << std::endl;
-            std::cout << "Range: " << robot->getRange() << std::endl;
             std::vector<std::vector<cv::Point> > *result = camera->getResult();
             if(result->size() == 0 || (*result)[0].size() == 0)
                 std::cout << "No result" << std::endl;
             else
             {
-                std::cout << "Selected shape: [";
-                std::cout << "(" << (*result)[0][0].x << "," << (*result)[0][0].y << ")";
-                for(int j = 1; j<(*result)[0].size(); j++)
-                    std::cout << ",(" << (*result)[0][j].x << "," << (*result)[0][j].y << ")";
-                std::cout << "]" << std::endl;
+                float position[3];
+                robot->getPosition(position);
+                objects->push_back(new Object((*result)[0], position[3]));
+                std::cout << "Object " << (objects.size()-1) << "saved" << std::endl;
                 robot->grip();
             }
         }

@@ -10,6 +10,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <math.h>
+#include "object.h"
 
 
 class Camera
@@ -24,6 +25,7 @@ public:
     void callback(const sensor_msgs::ImageConstPtr &msg);
     void request(RequestType request_type);
     bool isResultAvailable();
+    void setHighlightObjects(std::vector<Object> *objects);
     std::vector<std::vector<cv::Point> >* getResult();
 
 private:
@@ -35,6 +37,7 @@ private:
     image_transport::ImageTransport *it;
     image_transport::Subscriber is;
     std::vector<std::vector<cv::Point> > contours, *request_result;
+    std::vector<Object> objects;
     int hmin, hmax, vmin, threshold1, threshold2, minarea;
     RequestType request_type;
     RequestStatus request_status;

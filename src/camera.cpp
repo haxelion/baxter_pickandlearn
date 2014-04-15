@@ -84,9 +84,19 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
         if(area>minarea)
         {
             cv::approxPolyDP(contours[i], contours[i], sqrt(area)/10.0, true);
-            cv::drawContours(cv_ptr->image, contours, i, cv::Scalar(0,0,255),3, CV_AA);
-            for(int j = 0; j<contours[i].size(); j++)
-                cv::circle(cv_ptr->image, contours[i][j], 5, cv::Scalar(255,0,0), -1, CV_AA);
+            int match = -1;
+            for(int j = 0; j<objects.size(); j++)
+                if((*objects)[i].match(contours[i])
+                    match = j;
+            if(match == -1)
+            {
+                char buffer[16];
+                cv::drawContours(cv_ptr->image, contours, i, cv::Scalar(0,255,0),3, CV_AA);
+                snprintf(buffer, 16, "%d", match);
+                cv::putText(cv_ptr->image, std::string(buffer),contours[i][0], cv::FONT_HERSHEY_SIMPLEX, 2.0, cv::Scalar(0,255,0), 3, CV_AA);
+            }
+            else
+                cv::drawContours(cv_ptr->image, contours, i, cv::Scalar(255,0,0),3, CV_AA);
             if(request_status == STATUS_IN_PROGRESS)
             {
                 if(request_type == REQUEST_SELECTED_SHAPE)
@@ -127,4 +137,9 @@ std::vector<std::vector<cv::Point> >* Camera::getResult()
         return request_result;
     else
         return NULL;
+}
+
+void Camera::setHighlightObjects(std::vector<Object> *objects)
+{
+    this->objects = objects;
 }
