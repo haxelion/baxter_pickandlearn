@@ -85,10 +85,10 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
         {
             cv::approxPolyDP(contours[i], contours[i], sqrt(area)/10.0, true);
             int match = -1;
-            for(int j = 0; j<objects.size(); j++)
-                if((*objects)[i].match(contours[i])
+            for(int j = 0; j<pieces->size(); j++)
+                if((*pieces)[j].match(&(contours[i])))
                     match = j;
-            if(match == -1)
+            if(match != -1)
             {
                 char buffer[16];
                 cv::drawContours(cv_ptr->image, contours, i, cv::Scalar(0,255,0),3, CV_AA);
@@ -139,7 +139,7 @@ std::vector<std::vector<cv::Point> >* Camera::getResult()
         return NULL;
 }
 
-void Camera::setHighlightObjects(std::vector<Object> *objects)
+void Camera::setHighlightPieces(std::vector<Piece> *pieces)
 {
-    this->objects = objects;
+    this->pieces = pieces;
 }

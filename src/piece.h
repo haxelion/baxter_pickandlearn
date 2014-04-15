@@ -1,11 +1,11 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <vector>
 
-class Object
+class Piece
 {
 public:
-    Object(std::vector<cv::Point> *shape, float picking_height);
-    void setDropPosition(float position[], float orientation);
+    Piece(std::vector<cv::Point> *shape, float picking_height);
+    void setDropPosition(float position[], float orientation[]);
     bool match(std::vector<cv::Point> *shape);
 
 private:

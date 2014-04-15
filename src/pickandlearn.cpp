@@ -2,7 +2,6 @@
 #include <vector>
 #include "baxtercontroller.h"
 #include "camera.h"
-#include "object.cpp"
 
 int main(int argc, char **argv)
 {
@@ -11,8 +10,8 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     BaxterController *robot = new BaxterController(nh);
     Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh);
-    std::vector<Object> *objects = new std::vector<Object>;
-    camera->setHighlightObjects(objects);
+    std::vector<Piece> *pieces = new std::vector<Piece>;
+    camera->setHighlightPieces(pieces);
     int state = 0;
     while(true)
     {
@@ -33,8 +32,8 @@ int main(int argc, char **argv)
             {
                 float position[3];
                 robot->getPosition(position);
-                objects->push_back(new Object((*result)[0], position[3]));
-                std::cout << "Object " << (objects.size()-1) << "saved" << std::endl;
+                pieces->push_back(*(new Piece(&((*result)[0]), position[3])));
+                std::cout << "Object " << (pieces->size()-1) << " saved" << std::endl;
                 robot->grip();
             }
         }
