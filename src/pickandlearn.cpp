@@ -21,7 +21,19 @@ int main(int argc, char **argv)
         }
         else if(state == 1 && camera->isResultAvailable())
         {
+            float position[3], orientation[4];
             state = 2;
+            robot->getPosition(&position);
+            robot->getOrientation(&position);
+            std::cout << "Position:";
+            for(int i = 0; i<3; i++)
+                std::cout << " " << position[i];
+            std::cout << endl;
+            std::cout << "Orientation:";
+            for(int i = 0; i<3; i++)
+                std::cout << " " << orientation[i];
+            std::cout << endl;
+            std::cout << "Range: " << robot->getRange() << endl;
             std::vector<std::vector<cv::Point> > *result = camera->getResult();
             if(result->size() == 0 || (*result)[0].size() == 0)
                 std::cout << "No result" << std::endl;
