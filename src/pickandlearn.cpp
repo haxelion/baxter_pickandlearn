@@ -23,17 +23,17 @@ int main(int argc, char **argv)
         {
             float position[3], orientation[4];
             state = 2;
-            robot->getPosition(&position);
-            robot->getOrientation(&position);
+            robot->getPosition(position);
+            robot->getOrientation(position);
             std::cout << "Position:";
             for(int i = 0; i<3; i++)
                 std::cout << " " << position[i];
-            std::cout << endl;
+            std::cout << std::endl;
             std::cout << "Orientation:";
             for(int i = 0; i<3; i++)
                 std::cout << " " << orientation[i];
-            std::cout << endl;
-            std::cout << "Range: " << robot->getRange() << endl;
+            std::cout << std::endl;
+            std::cout << "Range: " << robot->getRange() << std::endl;
             std::vector<std::vector<cv::Point> > *result = camera->getResult();
             if(result->size() == 0 || (*result)[0].size() == 0)
                 std::cout << "No result" << std::endl;
