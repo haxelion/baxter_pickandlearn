@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include "robot.h"
+#include "baxtercontroller.h"
 #include "camera.h"
 
 int main(int argc, char **argv)

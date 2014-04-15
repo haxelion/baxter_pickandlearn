@@ -1,4 +1,4 @@
-#include "robot.h"
+#include "baxtercontroller.h"
 
 BaxterController::BaxterController(ros::NodeHandle nh)
 {
@@ -70,7 +70,7 @@ void BaxterController::gripperCallback(const baxter_core_msgs::EndEffectorStateC
 {
     if(gripper_hid == 0)
     {
-        gripper_hid = msg.id;
+        gripper_hid = msg->id;
         baxter_core_msgs::EndEffectorCommand cmd;
         cmd.id = gripper_hid;
         cmd.command = baxter_core_msgs::EndEffectorCommand::CMD_CALIBRATE;
@@ -80,19 +80,19 @@ void BaxterController::gripperCallback(const baxter_core_msgs::EndEffectorStateC
 
 void BaxterController::irCallback(const sensor_msgs::RangeConstPtr &msg)
 {
-    this->range = msg.range;
+    this->range = msg->range;
 }
 
-void endpointCallback(const baxter_core_msgs::EndPointStateConstPtr &msg)
+void BaxterController::endpointCallback(const baxter_core_msgs::EndpointStateConstPtr &msg)
 {
-    position[0] = msg.pose.position.x;
-    position[1] = msg.pose.position.y;
-    position[2] = msg.pose.position.z;
+    position[0] = msg->pose.position.x;
+    position[1] = msg->pose.position.y;
+    position[2] = msg->pose.position.z;
 
-    orientation[0] = msg.pose.orientation.x;
-    orientation[1] = msg.pose.orientation.y;
-    orientation[2] = msg.pose.orientation.z;
-    orientation[3] = msg.pose.orientation.w;
+    orientation[0] = msg->pose.orientation.x;
+    orientation[1] = msg->pose.orientation.y;
+    orientation[2] = msg->pose.orientation.z;
+    orientation[3] = msg->pose.orientation.w;
 }
 
 float BaxterController::getRange()

@@ -3,7 +3,7 @@
 #include <baxter_core_msgs/ITBState.h>
 #include <baxter_core_msgs/EndEffectorState.h>
 #include <baxter_core_msgs/EndEffectorCommand.h>
-#include <baxter_core_msgs/EndPointState.h>
+#include <baxter_core_msgs/EndpointState.h>
 #include <sensor_msgs/Range.h>
 
 const clock_t INPUT_BLOCKING_TIME = CLOCKS_PER_SEC/2;
@@ -17,7 +17,7 @@ public:
     void itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg);
     void gripperCallback(const baxter_core_msgs::EndEffectorStateConstPtr &msg);
     void irCallback(const sensor_msgs::RangeConstPtr &msg);
-    void endpointCallback(const baxter_core_msgs::EndPointStateConstPtr &msg);
+    void endpointCallback(const baxter_core_msgs::EndpointStateConstPtr &msg);
     ITBInput getInput();
     float getRange();
     void getPosition(float position[]);
