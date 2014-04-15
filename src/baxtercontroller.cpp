@@ -31,7 +31,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
     }
     std::cout << "\033[1;32mOK\033[0m" << std::endl;
     std::cout << "Registrating IR subscriber: ";
-    ir_sub = nh.subscribe("/robot/range/right_hand_range", 2, &BaxterController::irCallback, this);
+    ir_sub = nh.subscribe("/robot/range/right_hand_range/state", 2, &BaxterController::irCallback, this);
     if(ir_sub == NULL)
     {
         std::cout << "\033[1;31mFailed\033[0m" << std::endl;
