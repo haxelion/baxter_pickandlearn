@@ -30,6 +30,24 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         return;
     }
     std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout << "Registrating IR subscriber: ";
+    ir_sub = nh.subscribe("/robot/range/right_hand_range", 2, &BaxterController::irCallback, this);
+    if(ir_sub == NULL)
+    {
+        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        return;
+    }
+    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout << "Registrating endpoint subscriber: ";
+    endpoint_sub = nh.subscribe("/robot/limb/right/endpoint_state", 2, &BaxterController::endpointCallback, this);
+    if(endpoint_sub == NULL)
+    {
+        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        return;
+    }
+    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+
+
 }
 
 BaxterController::~BaxterController()
@@ -48,7 +66,7 @@ void BaxterController::itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg
     }
 }
 
-void BaxterController::gripperCallback(const baxter_core_msgs::EndEffectorState &msg)
+void BaxterController::gripperCallback(const baxter_core_msgs::EndEffectorStateConstPtr &msg)
 {
     if(gripper_hid == 0)
     {
@@ -58,6 +76,43 @@ void BaxterController::gripperCallback(const baxter_core_msgs::EndEffectorState 
         cmd.command = baxter_core_msgs::EndEffectorCommand::CMD_CALIBRATE;
         gripper_pub.publish(cmd);
     }
+}
+
+void BaxterController::irCallback(const sensor_msgs::RangeConstPtr &msg)
+{
+    this->range = msg.range;
+}
+
+void endpointCallback(const baxter_core_msgs::EndPointStateConstPtr &msg)
+{
+    position[0] = msg.pose.position.x;
+    position[1] = msg.pose.position.y;
+    position[2] = msg.pose.position.z;
+
+    orientation[0] = msg.pose.orientation.x;
+    orientation[1] = msg.pose.orientation.y;
+    orientation[2] = msg.pose.orientation.z;
+    orientation[3] = msg.pose.orientation.w;
+}
+
+float BaxterController::getRange()
+{
+    return range;
+}
+
+void BaxterController::getPosition(float position[])
+{
+    position[0] = this->position[0];
+    position[1] = this->position[1];
+    position[2] = this->position[2];
+}
+
+void BaxterController::getOrientation(float orientation[])
+{
+    orientation[0] = this->orientation[0];
+    orientation[1] = this->orientation[1];
+    orientation[2] = this->orientation[2];
+    orientation[3] = this->orientation[3];
 }
 
 BaxterController::ITBInput BaxterController::getInput()
