@@ -6,61 +6,61 @@ BaxterController::BaxterController(ros::NodeHandle nh)
     gripper_hid = 0;
     last_input_time = clock();
     this->nh = nh;
-    std::cout << "Registering ITB callbacks: ";
+    std::cout << std::setw(80) << std::left << "Registering ITB callbacks: ";
     itb_sub = nh.subscribe("/robot/itb/right_itb/state", 2, &BaxterController::itbCallback, this);
     if(itb_sub == NULL)
     {
-        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registering gripper callback: ";
+    std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::setw(80) << std::left << "Registering gripper callback: ";
     gripper_sub = nh.subscribe("/robot/end_effector/right_gripper/state", 2, &BaxterController::gripperCallback, this);
     if(gripper_sub == NULL)
     {
-        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "Registering gripper publisher: ";
+    std::cout << std::setw(80) << std::left << "Registering gripper publisher: ";
     gripper_pub = nh.advertise<baxter_core_msgs::EndEffectorCommand>("/robot/end_effector/right_gripper/command", 2);
     if(gripper_pub == NULL)
     {
-        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registering IR subscriber: ";
+    std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::setw(80) << std::left << "Registering IR subscriber: ";
     ir_sub = nh.subscribe("/robot/range/right_hand_range/state", 2, &BaxterController::irCallback, this);
     if(ir_sub == NULL)
     {
-        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registering endpoint subscriber: ";
+    std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::setw(80) << std::left << "Registering endpoint subscriber: ";
     endpoint_sub = nh.subscribe("/robot/limb/right/endpoint_state", 2, &BaxterController::endpointCallback, this);
     if(endpoint_sub == NULL)
     {
-        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registering inverse kinematic solver client: ";
+    std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::setw(80) << std::left << "Registering inverse kinematic solver client: ";
     ik_client = nh.serviceClient<baxter_core_msgs::SolvePositionIK>("ExternalTools/right/PositionKinematicsNode/IKService");
     if(ik_client == NULL)
     {
-        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registering joint publisher: ";
+    std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::setw(80) << std::left << "Registering joint publisher: ";
     joint_pub = nh.advertise<baxter_core_msgs::JointCommand>("/robot/limb/right/joint_command", 2);
     if(joint_pub == NULL)
     {
-        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
 }
 
 BaxterController::~BaxterController()
