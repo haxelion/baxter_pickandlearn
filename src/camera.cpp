@@ -28,20 +28,20 @@ Camera::Camera(Camera::CameraId id, ros::NodeHandle nh)
     open_camera.request.settings.controls.push_back(camera_control);
     if(!ros::service::call("/cameras/open", open_camera) || open_camera.response.err != 0)
     {
-        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     // Register the camera callback that receive the images
     std::cout << "Registrating camera callback: ";
     it = new image_transport::ImageTransport(nh);
     is = it->subscribe("/cameras/right_hand_camera/image", 1, &Camera::callback, this);
     if(is == NULL)
     {
-        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
 }
 
 Camera::~Camera()

@@ -10,42 +10,41 @@ BaxterController::BaxterController(ros::NodeHandle nh)
     itb_sub = nh.subscribe("/robot/itb/right_itb/state", 2, &BaxterController::itbCallback, this);
     if(itb_sub == NULL)
     {
-        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registrating gripper callback: ";
     gripper_sub = nh.subscribe("/robot/end_effector/right_gripper/state", 2, &BaxterController::gripperCallback, this);
     if(gripper_sub == NULL)
     {
-        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "\033[1;32mOK\033[0m" << std::endl;
     std::cout << "Registrating gripper publisher: ";
     gripper_pub = nh.advertise<baxter_core_msgs::EndEffectorCommand>("/robot/end_effector/right_gripper/command", 2);
     if(gripper_pub == NULL)
     {
-        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registrating IR subscriber: ";
     ir_sub = nh.subscribe("/robot/range/right_hand_range/state", 2, &BaxterController::irCallback, this);
     if(ir_sub == NULL)
     {
-        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registrating endpoint subscriber: ";
     endpoint_sub = nh.subscribe("/robot/limb/right/endpoint_state", 2, &BaxterController::endpointCallback, this);
     if(endpoint_sub == NULL)
     {
-        std::cout << "\033[1;31mFailed\033[0m" << std::endl;
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "\033[1;32mOK\033[0m" << std::endl;
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
 
 
 }
