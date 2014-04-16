@@ -31,7 +31,7 @@ Camera::Camera(Camera::CameraId id, ros::NodeHandle nh)
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     // Register the camera callback that receive the images
     std::cout << "Registering camera callback: ";
     it = new image_transport::ImageTransport(nh);
@@ -41,7 +41,7 @@ Camera::Camera(Camera::CameraId id, ros::NodeHandle nh)
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
 }
 
 Camera::~Camera()

@@ -13,7 +13,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registering gripper callback: ";
     gripper_sub = nh.subscribe("/robot/end_effector/right_gripper/state", 2, &BaxterController::gripperCallback, this);
     if(gripper_sub == NULL)
@@ -28,7 +28,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registering IR subscriber: ";
     ir_sub = nh.subscribe("/robot/range/right_hand_range/state", 2, &BaxterController::irCallback, this);
     if(ir_sub == NULL)
@@ -36,7 +36,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registering endpoint subscriber: ";
     endpoint_sub = nh.subscribe("/robot/limb/right/endpoint_state", 2, &BaxterController::endpointCallback, this);
     if(endpoint_sub == NULL)
@@ -44,23 +44,23 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registering inverse kinematic solver client: ";
-    ik_client = nh.serviceClient<SolvePositionIK>("ExternalTools/right/PositionKinematicsNode/IKService");
+    //ik_client = nh.serviceClient<baxter_core_msgs::SolvePositionIK>("ExternalTools/right/PositionKinematicsNode/IKService");
     if(ik_client == NULL)
     {
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registering joint publisher: ";
-    joint_pub = nh.advertise<baxter_core_msgs::JointCommand>("/robot/limb/right/joint_command", 2);
+    //joint_pub = nh.advertise<baxter_core_msgs::JointCommand>("/robot/limb/right/joint_command", 2);
     if(joint_pub == NULL)
     {
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
 }
 
 BaxterController::~BaxterController()
@@ -73,6 +73,7 @@ void BaxterController::itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg
     {
         if(msg->buttons[0])
         {
+            std::cout << "Button pressed" << std::endl;
             input = INPUT_WHEEL_CLICKED;
             last_input_time = clock();
         }
@@ -153,18 +154,27 @@ void BaxterController::release()
 
 void BaxterController::move(float position[], float orientation[])
 {
-    baxter_core_msgs::SolverPositionIK srv;
+    baxter_core_msgs::SolvePositionIK srv;
+    baxter_core_msgs::JointCommand cmd;
     geometry_msgs::PoseStamped pose_stamped;
     pose_stamped.header.stamp = ros::Time::now();
     pose_stamped.header.frame_id = "base";
-    pose.stamped.pose.position[0] = position[0];
-    pose.stamped.pose.position[1] = position[1];
-    pose.stamped.pose.position[2] = position[2];
-    pose.stamped.pose.orientation[0] = orientation[0];
-    pose.stamped.pose.orientation[1] = orientation[1];
-    pose.stamped.pose.orientation[2] = orientation[2];
-    pose.stamped.pose.orientation[3] = orientation[3];
+    pose_stamped.pose.position.x = position[0];
+    pose_stamped.pose.position.y = position[1];
+    pose_stamped.pose.position.z = position[2];
+    pose_stamped.pose.orientation.x = orientation[0];
+    pose_stamped.pose.orientation.y = orientation[1];
+    pose_stamped.pose.orientation.z = orientation[2];
+    pose_stamped.pose.orientation.w = orientation[3];
     srv.request.pose_stamp.push_back(geometry_msgs::PoseStamped());
     srv.request.pose_stamp.push_back(pose_stamped);
-    ik_client.call(srv);
+    if(!ik_client.call(srv))
+    {
+       std::cout << "\033[1;31mCall to inverse kinematic solver service failed]\033[0m" << std::endl;
+       return;
+    }
+    cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
+    cmd.names = srv.response.joints[1].name;
+    cmd.command = srv.response.joints[1].position;
+    joint_pub.publish(cmd);
 }

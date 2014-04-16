@@ -13,6 +13,7 @@ int main(int argc, char **argv)
     std::vector<Piece> *pieces = new std::vector<Piece>;
     camera->setHighlightPieces(pieces);
     int state = 0;
+    float position[3], orientation[4];
     while(true)
     {
         ros::spinOnce();
@@ -24,15 +25,18 @@ int main(int argc, char **argv)
         }
         else if(state == 1 && camera->isResultAvailable())
         {
-            state = 2;
             std::vector<std::vector<cv::Point> > *result = camera->getResult();
             if(result->size() == 0 || (*result)[0].size() == 0)
+            {
                 std::cout << "No result" << std::endl;
+                state = 0;
+            }
             else
             {
-                float position[3];
+                state = 2;
                 robot->getPosition(position);
-                pieces->push_back(*(new Piece(&((*result)[0]), position[3])));
+                robot->getOrientation(orientation);
+                pieces->push_back(Piece(&((*result)[0]), position[3]));
                 std::cout << "Object " << (pieces->size()-1) << " saved" << std::endl;
                 robot->grip();
             }
@@ -41,6 +45,7 @@ int main(int argc, char **argv)
         {
             state = 0;
             robot->release();
+            //robot->move(position, orientation);
         }
     }
     return 0;
