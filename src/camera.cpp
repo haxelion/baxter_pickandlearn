@@ -33,7 +33,7 @@ Camera::Camera(Camera::CameraId id, ros::NodeHandle nh)
     }
     std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     // Register the camera callback that receive the images
-    std::cout << "Registrating camera callback: ";
+    std::cout << "Registering camera callback: ";
     it = new image_transport::ImageTransport(nh);
     is = it->subscribe("/cameras/right_hand_camera/image", 1, &Camera::callback, this);
     if(is == NULL)

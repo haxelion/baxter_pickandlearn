@@ -6,7 +6,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
     gripper_hid = 0;
     last_input_time = clock();
     this->nh = nh;
-    std::cout << "Registrating ITB callbacks: ";
+    std::cout << "Registering ITB callbacks: ";
     itb_sub = nh.subscribe("/robot/itb/right_itb/state", 2, &BaxterController::itbCallback, this);
     if(itb_sub == NULL)
     {
@@ -14,14 +14,14 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         return;
     }
     std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registrating gripper callback: ";
+    std::cout << "Registering gripper callback: ";
     gripper_sub = nh.subscribe("/robot/end_effector/right_gripper/state", 2, &BaxterController::gripperCallback, this);
     if(gripper_sub == NULL)
     {
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
-    std::cout << "Registrating gripper publisher: ";
+    std::cout << "Registering gripper publisher: ";
     gripper_pub = nh.advertise<baxter_core_msgs::EndEffectorCommand>("/robot/end_effector/right_gripper/command", 2);
     if(gripper_pub == NULL)
     {
@@ -29,7 +29,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         return;
     }
     std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registrating IR subscriber: ";
+    std::cout << "Registering IR subscriber: ";
     ir_sub = nh.subscribe("/robot/range/right_hand_range/state", 2, &BaxterController::irCallback, this);
     if(ir_sub == NULL)
     {
@@ -37,7 +37,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         return;
     }
     std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-    std::cout << "Registrating endpoint subscriber: ";
+    std::cout << "Registering endpoint subscriber: ";
     endpoint_sub = nh.subscribe("/robot/limb/right/endpoint_state", 2, &BaxterController::endpointCallback, this);
     if(endpoint_sub == NULL)
     {
@@ -45,8 +45,22 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         return;
     }
     std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
-
-
+    std::cout << "Registering inverse kinematic solver client: ";
+    ik_client = nh.serviceClient<SolvePositionIK>("ExternalTools/right/PositionKinematicsNode/IKService");
+    if(ik_client == NULL)
+    {
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        return;
+    }
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
+    std::cout << "Registering joint publisher: ";
+    joint_pub = nh.advertise<baxter_core_msgs::JointCommand>("/robot/limb/right/joint_command", 2);
+    if(joint_pub == NULL)
+    {
+        std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
+        return;
+    }
+    std::cout  < std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
 }
 
 BaxterController::~BaxterController()
@@ -135,4 +149,22 @@ void BaxterController::release()
     cmd.id = gripper_hid;
     cmd.command = baxter_core_msgs::EndEffectorCommand::CMD_RELEASE;
     gripper_pub.publish(cmd);
+}
+
+void BaxterController::move(float position[], float orientation[])
+{
+    baxter_core_msgs::SolverPositionIK srv;
+    geometry_msgs::PoseStamped pose_stamped;
+    pose_stamped.header.stamp = ros::Time::now();
+    pose_stamped.header.frame_id = "base";
+    pose.stamped.pose.position[0] = position[0];
+    pose.stamped.pose.position[1] = position[1];
+    pose.stamped.pose.position[2] = position[2];
+    pose.stamped.pose.orientation[0] = orientation[0];
+    pose.stamped.pose.orientation[1] = orientation[1];
+    pose.stamped.pose.orientation[2] = orientation[2];
+    pose.stamped.pose.orientation[3] = orientation[3];
+    srv.request.pose_stamp.push_back(geometry_msgs::PoseStamped());
+    srv.request.pose_stamp.push_back(pose_stamped);
+    ik_client.call(srv);
 }

@@ -4,6 +4,8 @@
 #include <baxter_core_msgs/EndEffectorState.h>
 #include <baxter_core_msgs/EndEffectorCommand.h>
 #include <baxter_core_msgs/EndpointState.h>
+#include <baxter_core_msgs/SolvePositionIK.h>
+#include <baxter_core_msgs/JointCommand.h>
 #include <sensor_msgs/Range.h>
 
 const clock_t INPUT_BLOCKING_TIME = CLOCKS_PER_SEC/2;
@@ -28,7 +30,8 @@ public:
 private:
     ros::NodeHandle nh;
     ros::Subscriber itb_sub, gripper_sub, ir_sub, endpoint_sub;
-    ros::Publisher gripper_pub;
+    ros::Publisher gripper_pub, joint_pub;
+    ros::ServiceClient ik_client;
     ITBInput input;
     clock_t last_input_time;
     unsigned int gripper_hid;
