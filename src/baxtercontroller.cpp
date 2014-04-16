@@ -46,7 +46,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
     }
     std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registering inverse kinematic solver client: ";
-    //ik_client = nh.serviceClient<baxter_core_msgs::SolvePositionIK>("ExternalTools/right/PositionKinematicsNode/IKService");
+    ik_client = nh.serviceClient<baxter_core_msgs::SolvePositionIK>("ExternalTools/right/PositionKinematicsNode/IKService");
     if(ik_client == NULL)
     {
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
@@ -54,7 +54,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
     }
     std::cout << std::right << std::setw(80) << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << "Registering joint publisher: ";
-    //joint_pub = nh.advertise<baxter_core_msgs::JointCommand>("/robot/limb/right/joint_command", 2);
+    joint_pub = nh.advertise<baxter_core_msgs::JointCommand>("/robot/limb/right/joint_command", 2);
     if(joint_pub == NULL)
     {
         std::cout << std::right << std::setw(80) << "\033[1;31m[Failed]\033[0m" << std::endl;
