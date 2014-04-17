@@ -35,9 +35,9 @@ std::string Piece::serialize()
 {
     std::stringstream s;
     s << "{" << "name: '" << name << "', ";
-    s << "shape: [(" << shape[0].x << "," << shape[0].y << ")";
+    s << "shape: [(" << shape[0].x << ", " << shape[0].y << ")";
     for(int i = 1; i < shape.size(); i++)
-        s << ", (" << shape[i].x << shape[i].y << ")";
+        s << ", (" << shape[i].x <<", "<< shape[i].y << ")";
     s << "], picking_height: " << picking_height;
     s << ", picking_orientation: [" << picking_orientation[0];
     for(int i = 1; i < 4; i++)

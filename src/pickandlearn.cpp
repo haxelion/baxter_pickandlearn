@@ -39,7 +39,6 @@ int main(int argc, char **argv)
                 snprintf(buffer, 32, "Piece %d", pieces.size()+1);
                 pieces.push_back(Piece((*result)[0], position[3], orientation, std::string(buffer)));
                 std::cout << pieces.back().getName() << " saved:" << std::endl;
-                std::cout << pieces.back().serialize() << std::endl;
                 robot->grip();
             }
         }
