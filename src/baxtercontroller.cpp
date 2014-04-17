@@ -173,6 +173,7 @@ void BaxterController::move(float position[], float orientation[])
        std::cout << "\033[1;31mCall to inverse kinematic solver service failed]\033[0m" << std::endl;
        return;
     }
+    std::cout << "Got result: " << msg.isValid[1] << std::endl;
     cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
     cmd.names = srv.response.joints[1].name;
     cmd.command = srv.response.joints[1].position;
