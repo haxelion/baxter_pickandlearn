@@ -184,7 +184,7 @@ void BaxterController::moveTo(float position[], float orientation[])
 void BaxterController::move(float position[], float orientation[])
 {
     float p[3];
-    for(int i = 0; i<3, i++)
-        p[i] = this.position[i] + position[i];
+    for(int i = 0; i<3; i++)
+        p[i] = this->position[i] + position[i];
     moveTo(p, orientation);
 }   

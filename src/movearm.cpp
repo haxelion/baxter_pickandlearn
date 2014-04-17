@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     BaxterController *robot = new BaxterController(nh);
     float position[3], orientation[4];
     robot->getOrientation(orientation);
-    spinner.start()
+    spinner.start();
     while(!(std::cin.eof()))
     {
         std::cin >> position[0] >> position[1] >> position[2];
