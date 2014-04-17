@@ -41,4 +41,5 @@ private:
     float range;
     double position[3];
     double orientation[4];
+    bool has_to_move;
 };

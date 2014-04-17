@@ -4,6 +4,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
 {
     input = INPUT_NOTHING;
     gripper_hid = 0;
+    has_to_move = false;
     last_input_time = clock();
     this->nh = nh;
     std::cout << std::setw(80) << std::left << "Registering ITB callbacks: ";
@@ -108,8 +109,8 @@ void BaxterController::endpointCallback(const baxter_core_msgs::EndpointStateCon
     orientation[1] = msg->pose.orientation.y;
     orientation[2] = msg->pose.orientation.z;
     orientation[3] = msg->pose.orientation.w;
-    std::cout << "Publishing joint command" << std::endl;
-    joint_pub.publish(cmd);
+    if(has_to_move)
+        joint_pub.publish(joint_cmd);
 }
 
 float BaxterController::getRange()
@@ -176,12 +177,14 @@ void BaxterController::moveTo(float position[], float orientation[])
     if(!srv.response.isValid[1])
     {
        std::cout << "\033[1;31mInverse kinematic solver found no solution for that movement\033[0m" << std::endl;
-       return;
+       //return;
     }
     std::cout << "Got a valid answer" << std::endl;
+    has_to_move = false;
     joint_cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
     joint_cmd.names = srv.response.joints[1].name;
     joint_cmd.command = srv.response.joints[1].position;
+    has_to_move = true;
 }
 
 void BaxterController::move(float position[], float orientation[])
