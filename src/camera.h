@@ -25,7 +25,7 @@ public:
     void callback(const sensor_msgs::ImageConstPtr &msg);
     void request(RequestType request_type);
     bool isResultAvailable();
-    void setHighlightPieces(std::vector<Piece> *pieces);
+    void setHighlightPieces(std::vector<Piece> &pieces);
     std::vector<std::vector<cv::Point> >* getResult();
 
 private:
@@ -37,7 +37,7 @@ private:
     image_transport::ImageTransport *it;
     image_transport::Subscriber is;
     std::vector<std::vector<cv::Point> > contours, *request_result;
-    std::vector<Piece> *pieces;
+    std::vector<Piece> &pieces;
     int hmin, hmax, vmin, threshold1, threshold2, minarea;
     RequestType request_type;
     RequestStatus request_status;

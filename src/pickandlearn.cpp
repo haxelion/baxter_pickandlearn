@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     BaxterController *robot = new BaxterController(nh);
     Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh);
-    std::vector<Piece> *pieces = new std::vector<Piece>;
+    std::vector<Piece> pieces;
     camera->setHighlightPieces(pieces);
     int state = 0;
     float position[3], orientation[4];
@@ -36,8 +36,10 @@ int main(int argc, char **argv)
                 state = 2;
                 robot->getPosition(position);
                 robot->getOrientation(orientation);
-                pieces->push_back(Piece(&((*result)[0]), position[3]));
-                std::cout << "Object " << (pieces->size()-1) << " saved" << std::endl;
+                char buffer[32];
+                snprintf(buffer, 32, "Piece %d", pieces.size()+1);
+                pieces.push_back(Piece((*result)[0], position[3], orientation, std::string(buffer)));
+                std::cout << pieces.back().getName() << " saved" << std::endl;
                 robot->grip();
             }
         }

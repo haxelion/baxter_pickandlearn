@@ -85,15 +85,20 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
         {
             cv::approxPolyDP(contours[i], contours[i], sqrt(area)/10.0, true);
             int match = -1;
-            for(int j = 0; j<pieces->size(); j++)
-                if((*pieces)[j].match(&(contours[i])))
+            double closest = 0.2;
+            for(int j = 0; j<pieces.size(); j++)
+            {
+                double score = pieces[j].match(&(contours[i]));
+                if( score < closest)
+                {
                     match = j;
+                    closest = score;
+                }
+            }
             if(match != -1)
             {
-                char buffer[16];
                 cv::drawContours(cv_ptr->image, contours, i, cv::Scalar(0,255,0),3, CV_AA);
-                snprintf(buffer, 16, "%d", match);
-                cv::putText(cv_ptr->image, std::string(buffer),contours[i][0], cv::FONT_HERSHEY_SIMPLEX, 2.0, cv::Scalar(0,255,0), 3, CV_AA);
+                cv::putText(cv_ptr->image, pieces[match].getName(), contours[i][0], cv::FONT_HERSHEY_SIMPLEX, 2.0, cv::Scalar(0,255,0), 3, CV_AA);
             }
             else
                 cv::drawContours(cv_ptr->image, contours, i, cv::Scalar(255,0,0),3, CV_AA);

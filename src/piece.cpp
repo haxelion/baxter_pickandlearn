@@ -1,9 +1,18 @@
 #include "piece.h"
 
-Piece::Piece(std::vector<cv::Point> *shape, float picking_height)
+Piece::Piece(std::vector<cv::Point> shape, float picking_height, float picking_orientation[4], std::string name)
 {
-    this->shape = new std::vector<cv::Point>(*shape);
+    this->shape = shape;
     this->picking_height = picking_height;
+    this->picking_orientation[0] = picking_orientation[0];
+    this->picking_orientation[1] = picking_orientation[1];
+    this->picking_orientation[2] = picking_orientation[2];
+    this->picking_orientation[3] = picking_orientation[3];
+    this->name = name;
+    for(int i = 0; i<3; i++)
+        drop_position[i] = 0;
+    for(int i = 0; i<4; i++)
+        drop_orientation[i] = 0;
 }
 
 void Piece::setDropPosition(float position[], float orientation[])
@@ -15,6 +24,32 @@ void Piece::setDropPosition(float position[], float orientation[])
     drop_orientation[1] = orientation[1];
     drop_orientation[2] = orientation[2];
     drop_orientation[3] = orientation[3];
+}
+
+std::string getName()
+{
+    return name;
+}
+
+std::string serialize()
+{
+    std::stringstream s;
+    s << "{" << "name: '" << name << "', ";
+    s << "shape: [(" << shape[0].x << "," << shape[0].y << ")";
+    for(int i = 1; i < shape.size(); i++)
+        s << ", (" << shape[i].x << shape[i].y << ")";
+    s << "], picking_height: " << picking_height;
+    s << ", picking_orientation: [" << picking_orientation[0];
+    for(int i = 1; i < 4; i++)
+        s << ", " << picking_orientation[i];
+    s << "], drop_position: [" << drop_position[0];
+    for(int i = 1; i < 3; i++)
+        s << ", " << drop_position[i];
+    s << "], drop_orientation: [" << drop_position[0];
+    for(int i = 1; i < 4; i++)
+        s << ", " << drop_position[i];
+    s << "]}";
+    return s.str();
 }
 
 bool Piece::match(std::vector<cv::Point> *shape)
