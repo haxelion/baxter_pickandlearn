@@ -108,6 +108,8 @@ void BaxterController::endpointCallback(const baxter_core_msgs::EndpointStateCon
     orientation[1] = msg->pose.orientation.y;
     orientation[2] = msg->pose.orientation.z;
     orientation[3] = msg->pose.orientation.w;
+
+    joint_pub.publish(cmd);
 }
 
 float BaxterController::getRange()
@@ -117,17 +119,14 @@ float BaxterController::getRange()
 
 void BaxterController::getPosition(float position[])
 {
-    position[0] = this->position[0];
-    position[1] = this->position[1];
-    position[2] = this->position[2];
+    for(int i = 0; i < 3; i++)
+        position[i] = this->position[i];
 }
 
 void BaxterController::getOrientation(float orientation[])
 {
-    orientation[0] = this->orientation[0];
-    orientation[1] = this->orientation[1];
-    orientation[2] = this->orientation[2];
-    orientation[3] = this->orientation[3];
+    for(int i = 0; i < 4; i++)
+        orientation[i] = this->orientation[i];
 }
 
 BaxterController::ITBInput BaxterController::getInput()
@@ -153,10 +152,9 @@ void BaxterController::release()
     gripper_pub.publish(cmd);
 }
 
-void BaxterController::move(float position[], float orientation[])
+void BaxterController::moveTo(float position[], float orientation[])
 {
     baxter_core_msgs::SolvePositionIK srv;
-    baxter_core_msgs::JointCommand cmd;
     geometry_msgs::PoseStamped pose_stamped;
     pose_stamped.header.stamp = ros::Time::now();
     pose_stamped.header.frame_id = "base";
@@ -181,9 +179,12 @@ void BaxterController::move(float position[], float orientation[])
     cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
     cmd.names = srv.response.joints[1].name;
     cmd.command = srv.response.joints[1].position;
-    joint_pub.publish(cmd);
 }
 
-void BaxterController::moveTo(float position[], float orientation[])
+void BaxterController::move(float position[], float orientation[])
 {
-}
+    float p[3];
+    for(int i = 0; i<3, i++)
+        p[i] = this.position[i] + position[i];
+    moveTo(p, orientation);
+}   

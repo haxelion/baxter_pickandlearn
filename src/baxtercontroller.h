@@ -34,6 +34,7 @@ private:
     ros::Subscriber itb_sub, gripper_sub, ir_sub, endpoint_sub;
     ros::Publisher gripper_pub, joint_pub;
     ros::ServiceClient ik_client;
+    baxter_core_msgs::JointCommand cmd;
     ITBInput input;
     clock_t last_input_time;
     unsigned int gripper_hid;
