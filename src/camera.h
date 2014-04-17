@@ -20,12 +20,11 @@ public:
     enum RequestType {REQUEST_SELECTED_SHAPE, REQUEST_SHAPES};
     enum RequestStatus {STATUS_AVAILABLE, STATUS_REQUESTING, STATUS_IN_PROGRESS};
 
-    Camera(CameraId id, ros::NodeHandle nh);
+    Camera(CameraId id, ros::NodeHandle nh, std::vector<Piece> &highlight);
     ~Camera();
     void callback(const sensor_msgs::ImageConstPtr &msg);
     void request(RequestType request_type);
     bool isResultAvailable();
-    void setHighlightPieces(std::vector<Piece> &pieces);
     std::vector<std::vector<cv::Point> >* getResult();
 
 private:

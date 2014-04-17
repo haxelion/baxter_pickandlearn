@@ -1,6 +1,7 @@
 #include "camera.h"
 
-Camera::Camera(Camera::CameraId id, ros::NodeHandle nh)
+Camera::Camera(Camera::CameraId id, ros::NodeHandle nh, std::vector<Piece> &highlight) :
+pieces(highlight)
 {
     hmin = 0;
     hmax = 100;
@@ -85,10 +86,10 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
         {
             cv::approxPolyDP(contours[i], contours[i], sqrt(area)/10.0, true);
             int match = -1;
-            double closest = 0.2;
+            double closest = 0.1;
             for(int j = 0; j<pieces.size(); j++)
             {
-                double score = pieces[j].match(&(contours[i]));
+                double score = pieces[j].match(contours[i]);
                 if( score < closest)
                 {
                     match = j;
@@ -142,9 +143,4 @@ std::vector<std::vector<cv::Point> >* Camera::getResult()
         return request_result;
     else
         return NULL;
-}
-
-void Camera::setHighlightPieces(std::vector<Piece> *pieces)
-{
-    this->pieces = pieces;
 }

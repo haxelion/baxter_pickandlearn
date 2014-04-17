@@ -6,9 +6,9 @@
 class Piece
 {
 public:
-    Piece(std::vector<cv::Point> *shape, float picking_height, float picking_orientation[4], std::string name);
+    Piece(std::vector<cv::Point> shape, float picking_height, float picking_orientation[4], std::string name);
     void setDropPosition(float position[], float orientation[]);
-    bool match(std::vector<cv::Point> *shape);
+    double match(std::vector<cv::Point> &shape);
     std::string getName();
     std::string serialize();
 

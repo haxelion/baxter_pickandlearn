@@ -21,6 +21,7 @@ BaxterController::BaxterController(ros::NodeHandle nh)
         std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
         return;
     }
+    std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
     std::cout << std::setw(80) << std::left << "Registering gripper publisher: ";
     gripper_pub = nh.advertise<baxter_core_msgs::EndEffectorCommand>("/robot/end_effector/right_gripper/command", 2);
     if(gripper_pub == NULL)
@@ -170,10 +171,13 @@ void BaxterController::move(float position[], float orientation[])
     srv.request.pose_stamp.push_back(pose_stamped);
     if(!ik_client.call(srv))
     {
-       std::cout << "\033[1;31mCall to inverse kinematic solver service failed]\033[0m" << std::endl;
+       std::cout << "\033[1;31mCall to inverse kinematic solver service failed\033[0m" << std::endl;
        return;
     }
-    std::cout << "Got result: " << msg.isValid[1] << std::endl;
+    if(!srv.response.isValid[1])
+    {
+       std::cout << "\033[1;31mInverse kinematic solver found no solution for that movement\033[0m" << std::endl;
+    }
     cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
     cmd.names = srv.response.joints[1].name;
     cmd.command = srv.response.joints[1].position;

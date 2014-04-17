@@ -26,12 +26,12 @@ void Piece::setDropPosition(float position[], float orientation[])
     drop_orientation[3] = orientation[3];
 }
 
-std::string getName()
+std::string Piece::getName()
 {
     return name;
 }
 
-std::string serialize()
+std::string Piece::serialize()
 {
     std::stringstream s;
     s << "{" << "name: '" << name << "', ";
@@ -52,9 +52,7 @@ std::string serialize()
     return s.str();
 }
 
-bool Piece::match(std::vector<cv::Point> *shape)
+double Piece::match(std::vector<cv::Point> &shape)
 {
-    if(cv::matchShapes(*(this->shape), *shape, CV_CONTOURS_MATCH_I3, 0) <0.1)
-        return true;
-    return false;
+    return cv::matchShapes(this->shape, shape, CV_CONTOURS_MATCH_I3, 0);
 }
