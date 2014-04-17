@@ -108,7 +108,7 @@ void BaxterController::endpointCallback(const baxter_core_msgs::EndpointStateCon
     orientation[1] = msg->pose.orientation.y;
     orientation[2] = msg->pose.orientation.z;
     orientation[3] = msg->pose.orientation.w;
-
+    std::cout << "Publishing joint command" << std::endl;
     joint_pub.publish(cmd);
 }
 
@@ -167,6 +167,7 @@ void BaxterController::moveTo(float position[], float orientation[])
     pose_stamped.pose.orientation.w = orientation[3];
     srv.request.pose_stamp.push_back(geometry_msgs::PoseStamped());
     srv.request.pose_stamp.push_back(pose_stamped);
+    std::cout << "Calling inverse kinematic solver service" << std::endl;
     if(!ik_client.call(srv))
     {
        std::cout << "\033[1;31mCall to inverse kinematic solver service failed\033[0m" << std::endl;
@@ -175,10 +176,12 @@ void BaxterController::moveTo(float position[], float orientation[])
     if(!srv.response.isValid[1])
     {
        std::cout << "\033[1;31mInverse kinematic solver found no solution for that movement\033[0m" << std::endl;
+       return;
     }
-    cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
-    cmd.names = srv.response.joints[1].name;
-    cmd.command = srv.response.joints[1].position;
+    std::cout << "Got a valid answer" << std::endl;
+    joint_cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
+    joint_cmd.names = srv.response.joints[1].name;
+    joint_cmd.command = srv.response.joints[1].position;
 }
 
 void BaxterController::move(float position[], float orientation[])
