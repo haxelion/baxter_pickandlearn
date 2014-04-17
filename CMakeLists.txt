@@ -108,6 +108,7 @@ include_directories(
 ## Declare a cpp executable
 add_executable(pickandlearn src/pickandlearn.cpp src/camera.cpp src/piece.cpp src/baxtercontroller.cpp)
 add_executable(snapshot src/snapshot.cpp)
+add_executable(movearm src/movearm.cpp src/baxtercontroller.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -116,6 +117,7 @@ add_executable(snapshot src/snapshot.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(pickandlearn ${catkin_LIBRARIES})
 target_link_libraries(snapshot ${catkin_LIBRARIES})
+target_link_libraries(movearm ${catkin_LIBRARIES})
 
 #############
 ## Install ##

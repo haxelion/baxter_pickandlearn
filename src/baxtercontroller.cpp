@@ -183,3 +183,7 @@ void BaxterController::move(float position[], float orientation[])
     cmd.command = srv.response.joints[1].position;
     joint_pub.publish(cmd);
 }
+
+void BaxterController::moveTo(float position[], float orientation[])
+{
+}

@@ -27,6 +27,7 @@ public:
     void grip();
     void release();
     void move(float position[], float orientation[]);
+    void moveTo(float position[], float orientation[]);
 
 private:
     ros::NodeHandle nh;
