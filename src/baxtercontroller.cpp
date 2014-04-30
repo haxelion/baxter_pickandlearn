@@ -186,9 +186,8 @@ void BaxterController::moveTo(float position[], float orientation[])
     if(!srv.response.isValid[1])
     {
        std::cout << "\033[1;31mInverse kinematic solver found no solution for that movement\033[0m" << std::endl;
-       //return;
+       return;
     }
-    std::cout << "Got a valid answer" << std::endl;
     has_to_move = false;
     joint_cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
     joint_cmd.names = srv.response.joints[1].name;
