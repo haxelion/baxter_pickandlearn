@@ -11,6 +11,7 @@ int main(int argc, char **argv)
     ros::AsyncSpinner spinner(1);
     std::string command;
     bool running = true;
+    std::vector<Piece> pieces;
     BaxterController *robot = new BaxterController(nh);
     Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh, pieces);
     float position[3], orientation[4];
@@ -21,12 +22,23 @@ int main(int argc, char **argv)
         if(command == "pos")
         {
             robot->getPosition(position);
-            std::cout << position[0] << " " << position[1] << " " <<position[2] << std::endl;
+            std::cout << position[0] << " " << position[1] << " " << position[2] << std::endl;
+        }
+        else if(command == "ori")
+        {
+            robot->getOrientation(orientation);
+            std::cout << orientation[0] << " " << orientation[1] << " " << orientation[2] << " " << orientation[3] << std::endl;
         }
         else if(command == "mov")
         {
             robot->getOrientation(orientation);
             std::cin >> position[0] >> position[1] >> position[2];
+            robot->moveTo(position, orientation);
+        }
+        else if(command == "rot")
+        {
+            robot->getPosition(position);
+            std::cin >> orientation[0] >> orientation[1] >> orientation[2] >> orientation[3];
             robot->moveTo(position, orientation);
         }
         else if(command == "grp")
@@ -39,5 +51,7 @@ int main(int argc, char **argv)
             std::cout << "Invalid command. List of command: pos, mov, grp, rls, bye." << std::endl;
     }
     spinner.stop();
+    delete robot;
+    delete camera;
     return 0;
 }

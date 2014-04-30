@@ -108,7 +108,7 @@ include_directories(
 ## Declare a cpp executable
 add_executable(pickandlearn src/pickandlearn.cpp src/camera.cpp src/piece.cpp src/baxtercontroller.cpp)
 add_executable(snapshot src/snapshot.cpp)
-add_executable(movearm src/movearm.cpp src/baxtercontroller.cpp)
+add_executable(movearm src/movearm.cpp src/baxtercontroller.cpp src/camera.cpp src/piece.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
