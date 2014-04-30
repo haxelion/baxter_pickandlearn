@@ -8,14 +8,15 @@ int main(int argc, char **argv)
     // Initialise ROS
     ros::init(argc, argv, "baxter_pickandlearn");
     ros::NodeHandle nh;
+    ros::AsyncSpinner spinner(1);
     std::vector<Piece> pieces;
     BaxterController *robot = new BaxterController(nh);
     Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh, pieces);
     int state = 0;
     float position[3], orientation[4];
+    spinner.start();
     while(true)
     {
-        ros::spinOnce();
         BaxterController::ITBInput input = robot->getInput();
         if(state == 0 && input == BaxterController::INPUT_WHEEL_CLICKED)
         {
