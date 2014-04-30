@@ -11,6 +11,7 @@ public:
     double match(std::vector<cv::Point> &shape);
     std::string getName();
     std::string serialize();
+    deserialize(std::string s);
 
 private:
     std::vector<cv::Point> shape;

@@ -34,22 +34,30 @@ std::string Piece::getName()
 std::string Piece::serialize()
 {
     std::stringstream s;
-    s << "{" << "name: '" << name << "', ";
+    s << "name: " << name << std::endl; 
     s << "shape: [(" << shape[0].x << ", " << shape[0].y << ")";
     for(int i = 1; i < shape.size(); i++)
         s << ", (" << shape[i].x <<", "<< shape[i].y << ")";
-    s << "], picking_height: " << picking_height;
-    s << ", picking_orientation: [" << picking_orientation[0];
+    s << "]" << std::endl;
+    s << "picking_height: " << picking_height << std::endl;
+    s << "picking_orientation: [" << picking_orientation[0];
     for(int i = 1; i < 4; i++)
         s << ", " << picking_orientation[i];
-    s << "], drop_position: [" << drop_position[0];
+    s << "]" << std::endl;
+    s << "drop_position: [" << drop_position[0];
     for(int i = 1; i < 3; i++)
         s << ", " << drop_position[i];
-    s << "], drop_orientation: [" << drop_position[0];
+    s << "]" << std::endl;
+    s << "drop_orientation: [" << drop_position[0];
     for(int i = 1; i < 4; i++)
         s << ", " << drop_position[i];
-    s << "]}";
+    s << "]" << std::endl;
     return s.str();
+}
+
+void Piece::deserialize(std::string s)
+{
+
 }
 
 double Piece::match(std::vector<cv::Point> &shape)
