@@ -47,7 +47,6 @@ int main(int argc, char **argv)
         {
             state = 0;
             robot->release();
-            robot->move(position, orientation);
         }
     }
     return 0;

@@ -5,7 +5,7 @@ pieces(highlight)
 {
     hmin = 0;
     hmax = 100;
-    vmin = 50;
+    vmin = 30;
     threshold1 = 50;
     threshold2 = 50;
     minarea = 1000;
@@ -86,7 +86,7 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
         {
             cv::approxPolyDP(contours[i], contours[i], sqrt(area)/10.0, true);
             int match = -1;
-            double closest = 0.1;
+            double closest = 0.05;
             for(int j = 0; j<pieces.size(); j++)
             {
                 double score = pieces[j].match(contours[i]);
