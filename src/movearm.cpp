@@ -12,6 +12,7 @@ int main(int argc, char **argv)
     std::string command;
     bool running = true;
     BaxterController *robot = new BaxterController(nh);
+    Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh, pieces);
     float position[3], orientation[4];
     spinner.start();
     while(running)
