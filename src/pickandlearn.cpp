@@ -14,14 +14,24 @@ int main(int argc, char **argv)
     Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh, pieces);
     int state = 0;
     float position[3], orientation[4];
+    bool running = true;
     spinner.start();
-    while(true)
+    while(running)
     {
         BaxterController::ITBInput input = robot->getInput();
-        if(state == 0 && input == BaxterController::INPUT_WHEEL_CLICKED)
+        if(input == BaxterController::INPUT_BACK_CLICKED)
+            running = false;
+        if(state == 0)
         {
-            camera->request(Camera::REQUEST_SELECTED_SHAPE);
-            state = 1;
+            if(input ==  BaxterController::INPUT_WHEEL_CLICKED)
+            {
+                camera->request(Camera::REQUEST_SELECTED_SHAPE);
+                state = 1;
+            }
+            if(input ==  BaxterController::INPUT_HOME_CLICKED)
+            {
+                state = 3;
+            }
         }
         else if(state == 1 && camera->isResultAvailable())
         {
@@ -48,6 +58,25 @@ int main(int argc, char **argv)
             state = 0;
             robot->release();
         }
+        else if(state == 3)
+        {
+            camera->request(Camera::REQUEST_SHAPES);
+            state = 4;
+        }
+        else if(state == 4 && camera->isResultAvailable())
+        {
+            std::vector<std::vector<cv::Point> > *result = camera->getResult();
+            if(result->size() == 0 || (*result)[0].size() == 0)
+            {
+                state = 3;
+            }
+            else
+            {
+
+            }
+        }
     }
+    delete robot;
+    delete camera;
     return 0;
 }
