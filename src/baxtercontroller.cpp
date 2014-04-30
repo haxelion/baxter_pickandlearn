@@ -75,8 +75,17 @@ void BaxterController::itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg
     {
         if(msg->buttons[0])
         {
-            std::cout << "Button pressed" << std::endl;
             input = INPUT_WHEEL_CLICKED;
+            last_input_time = clock();
+        }
+        else if(msg->buttons[1])
+        {
+            input = INPUT_BACK_CLICKED;
+            last_input_time = clock();
+        }
+        else if(msg->buttons[2])
+        {
+            input = INPUT_HOME_CLICKED;
             last_input_time = clock();
         }
     }

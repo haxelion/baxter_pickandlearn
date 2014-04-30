@@ -13,7 +13,7 @@ const clock_t INPUT_BLOCKING_TIME = CLOCKS_PER_SEC/2;
 class BaxterController
 {
 public:
-    enum ITBInput {INPUT_NOTHING, INPUT_WHEEL_CLICKED};
+    enum ITBInput {INPUT_NOTHING, INPUT_WHEEL_CLICKED, INPUT_BACK_CLICKED, INPUT_HOME_CLICKED};
     BaxterController(ros::NodeHandle nh);
     ~BaxterController();
     void itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg);
