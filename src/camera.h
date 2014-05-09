@@ -24,6 +24,9 @@ public:
     ~Camera();
     void callback(const sensor_msgs::ImageConstPtr &msg);
     void request(RequestType request_type);
+    void setAim(int x, int y);
+    void resetAim();
+    void cameraTransform(float x, float y, float dz);
     bool isResultAvailable();
     std::vector<std::vector<cv::Point> >* getResult();
 
@@ -38,6 +41,7 @@ private:
     std::vector<std::vector<cv::Point> > contours, *request_result;
     std::vector<Piece> &pieces;
     int hmin, hmax, vmin, threshold1, threshold2, minarea;
+    int aim_x, aim_y;
     RequestType request_type;
     RequestStatus request_status;
 };

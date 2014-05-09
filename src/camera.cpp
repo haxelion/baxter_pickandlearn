@@ -43,6 +43,7 @@ pieces(highlight)
         return;
     }
     std::cout << std::right << "\033[1;32m[OK]\033[0m" << std::endl;
+    resetAim();
 }
 
 Camera::~Camera()
@@ -85,17 +86,7 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
         if(area>minarea)
         {
             cv::approxPolyDP(contours[i], contours[i], sqrt(area)/10.0, true);
-            int match = -1;
-            double closest = 0.05;
-            for(int j = 0; j<pieces.size(); j++)
-            {
-                double score = pieces[j].match(contours[i]);
-                if( score < closest)
-                {
-                    match = j;
-                    closest = score;
-                }
-            }
+            int match = closestMatch(pieces, contours[i], 0.05);
             if(match != -1)
             {
                 cv::drawContours(cv_ptr->image, contours, i, cv::Scalar(0,255,0),3, CV_AA);
@@ -111,12 +102,26 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
                 else if(request_type == REQUEST_SHAPES)
                     request_result->push_back(std::vector<cv::Point>(contours[i]));
             }
+            cv::line(cv_ptr->image, Point(aim_x - 10, aim_y), Point(aim_x+10, aim_y), cv::Scalar(255,0,0), 5, CV_AA);
+            cv::line(cv_ptr->image, Point(aim_x, aim_y-10), Point(aim_x, aim_y+10), cv::Scalar(255,0,0), 5, CV_AA);
         }
     }
     if(request_status == STATUS_IN_PROGRESS)
         request_status = STATUS_AVAILABLE;
     cv::imshow("Baxter Pick And Learn", cv_ptr->image);
     cv::waitKey(3);
+}
+
+void Camera::setAim(int x, int y)
+{
+    aim_x = x;
+    aim_y = y;
+}
+
+void Camera::resetAim()
+{
+    aim_x = 666;
+    aim_y = 240;
 }
 
 void Camera::request(Camera::RequestType request_type)
@@ -143,4 +148,16 @@ std::vector<std::vector<cv::Point> >* Camera::getResult()
         return request_result;
     else
         return NULL;
+}
+
+
+void Camera::cameraTransform(float &x, float &y, float dz)
+{
+    /*
+    h = 14.5 cm
+    x = 50 cm
+    y = 28 cm
+    */
+    x = (x/640)*0.25*(dz/0.145);
+    y = (x/400)*0.14*(dz/0.145);
 }
