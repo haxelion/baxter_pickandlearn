@@ -26,8 +26,8 @@ public:
     void getOrientation(float orientation[]);
     void grip();
     void release();
-    void move(float position[], float orientation[]);
-    void moveTo(float position[], float orientation[]);
+    int move(float position[], float orientation[]);
+    int moveTo(float position[], float orientation[]);
 
 private:
     ros::NodeHandle nh;

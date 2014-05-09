@@ -162,7 +162,7 @@ void BaxterController::release()
     gripper_pub.publish(cmd);
 }
 
-void BaxterController::moveTo(float position[], float orientation[])
+int BaxterController::moveTo(float position[], float orientation[])
 {
     baxter_core_msgs::SolvePositionIK srv;
     geometry_msgs::PoseStamped pose_stamped;
@@ -177,28 +177,28 @@ void BaxterController::moveTo(float position[], float orientation[])
     pose_stamped.pose.orientation.w = orientation[3];
     srv.request.pose_stamp.push_back(geometry_msgs::PoseStamped());
     srv.request.pose_stamp.push_back(pose_stamped);
-    std::cout << "Calling inverse kinematic solver service" << std::endl;
     if(!ik_client.call(srv))
     {
        std::cout << "\033[1;31mCall to inverse kinematic solver service failed\033[0m" << std::endl;
-       return;
+       return 1;
     }
     if(!srv.response.isValid[1])
     {
        std::cout << "\033[1;31mInverse kinematic solver found no solution for that movement\033[0m" << std::endl;
-       return;
+       return 1;
     }
     has_to_move = false;
     joint_cmd.mode =  baxter_core_msgs::JointCommand::POSITION_MODE;
     joint_cmd.names = srv.response.joints[1].name;
     joint_cmd.command = srv.response.joints[1].position;
     has_to_move = true;
+    return 0;
 }
 
-void BaxterController::move(float position[], float orientation[])
+int BaxterController::move(float position[], float orientation[])
 {
     float p[3];
     for(int i = 0; i<3; i++)
         p[i] = this->position[i] + position[i];
-    moveTo(p, orientation);
+    return moveTo(p, orientation);
 }   

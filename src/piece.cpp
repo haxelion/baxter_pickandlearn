@@ -65,12 +65,12 @@ double Piece::match(std::vector<cv::Point> &shape)
     return cv::matchShapes(this->shape, shape, CV_CONTOURS_MATCH_I3, 0);
 }
 
-float getPickingHeight()
+float Piece::getPickingHeight()
 {
     return picking_height;
 }
 
-void getPickingOrientation(float picking_orientation[])
+void Piece::getPickingOrientation(float picking_orientation[])
 {
     picking_orientation[0] = this->picking_orientation[0];
     picking_orientation[1] = this->picking_orientation[1];
@@ -78,14 +78,14 @@ void getPickingOrientation(float picking_orientation[])
     picking_orientation[3] = this->picking_orientation[3];
 }
 
-void getDropPosition(float drop_position[])
+void Piece::getDropPosition(float drop_position[])
 {
     drop_position[0] = this->drop_position[0];
     drop_position[1] = this->drop_position[1];
     drop_position[2] = this->drop_position[2];
 }
 
-void getDropOrientation(float drop_orientation[]);
+void Piece::getDropOrientation(float drop_orientation[])
 {
     drop_orientation[0] = this->drop_orientation[0];
     drop_orientation[1] = this->drop_orientation[1];
@@ -111,6 +111,8 @@ int closestMatch(std::vector<Piece> &pieces, std::vector<cv::Point> &shape, doub
 
 void closestMatch(std::vector<Piece> &pieces, std::vector<std::vector<cv::Point> > &shapes, double threshold, int &idxp, int &idxs)
 {
+    idxs = -1;
+    idxp = -1;
     double closest = threshold;
     for(int i = 0; i<shapes.size(); i++)
     {

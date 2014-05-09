@@ -26,7 +26,7 @@ public:
     void request(RequestType request_type);
     void setAim(int x, int y);
     void resetAim();
-    void cameraTransform(float x, float y, float dz);
+    void cameraTransform(float &x, float &y, float dz);
     bool isResultAvailable();
     std::vector<std::vector<cv::Point> >* getResult();
 

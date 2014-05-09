@@ -97,13 +97,15 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
             if(request_status == STATUS_IN_PROGRESS)
             {
                 if(request_type == REQUEST_SELECTED_SHAPE)
+                {
                     if(cv::pointPolygonTest(contours[i], cv::Point(666, 240), false) != -1)
                         request_result->push_back(std::vector<cv::Point>(contours[i]));
+                }
                 else if(request_type == REQUEST_SHAPES)
                     request_result->push_back(std::vector<cv::Point>(contours[i]));
             }
-            cv::line(cv_ptr->image, Point(aim_x - 10, aim_y), Point(aim_x+10, aim_y), cv::Scalar(255,0,0), 5, CV_AA);
-            cv::line(cv_ptr->image, Point(aim_x, aim_y-10), Point(aim_x, aim_y+10), cv::Scalar(255,0,0), 5, CV_AA);
+            cv::line(cv_ptr->image, cv::Point(aim_x - 10, aim_y), cv::Point(aim_x+10, aim_y), cv::Scalar(0,0,255), 3, CV_AA);
+            cv::line(cv_ptr->image, cv::Point(aim_x, aim_y-10), cv::Point(aim_x, aim_y+10), cv::Scalar(0,0,255), 3, CV_AA);
         }
     }
     if(request_status == STATUS_IN_PROGRESS)
@@ -159,5 +161,5 @@ void Camera::cameraTransform(float &x, float &y, float dz)
     y = 28 cm
     */
     x = (x/640)*0.25*(dz/0.145);
-    y = (x/400)*0.14*(dz/0.145);
+    y = (y/400)*0.14*(dz/0.145);
 }
