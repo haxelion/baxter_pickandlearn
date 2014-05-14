@@ -1,4 +1,5 @@
 #include <time.h>
+#include <math.h>
 #include <ros/ros.h>
 #include <baxter_core_msgs/ITBState.h>
 #include <baxter_core_msgs/EndEffectorState.h>
@@ -28,6 +29,8 @@ public:
     void release();
     int move(float position[], float orientation[]);
     int moveTo(float position[], float orientation[]);
+    void stop();
+    float distanceToSetPosition();
 
 private:
     ros::NodeHandle nh;
@@ -39,7 +42,7 @@ private:
     clock_t last_input_time;
     unsigned int gripper_hid;
     float range;
-    double position[3];
-    double orientation[4];
+    double position[3], set_position[3];
+    double orientation[4], set_orientation[4];
     bool has_to_move;
 };

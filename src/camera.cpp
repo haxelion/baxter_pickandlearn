@@ -85,7 +85,7 @@ void Camera::callback(const sensor_msgs::ImageConstPtr &msg)
         double area = cv::contourArea(contours[i]);
         if(area>minarea)
         {
-            cv::approxPolyDP(contours[i], contours[i], sqrt(area)/10.0, true);
+            cv::approxPolyDP(contours[i], contours[i], sqrt(area)/20.0, true);
             int match = closestMatch(pieces, contours[i], 0.05);
             if(match != -1)
             {
@@ -163,3 +163,31 @@ void Camera::cameraTransform(float &x, float &y, float dz)
     x = (x/640)*0.25*(dz/0.145);
     y = (y/400)*0.14*(dz/0.145);
 }
+
+int Camera::getClosestMatchApproach(std::vector<std::vector<cv::Point> > *result, pieces, float z, float obj_position[], float obj_orientation[])
+{
+        int matchs, matchp, x, y;
+        closestMatch(pieces, (*result), 0.05, matchp, matchs);
+        if(matchs == -1 || matchp == -1)
+        {
+            std::cout << "No piece found." << std::endl;
+            return 1;
+        }
+        else
+        {
+            cv::Moments m = cv::moments((*result)[matchs]);
+            x = m.m10/m.m00;
+            y = m.m01/m.m00;
+            dz = z-pieces[matchp].getPickingHeight()+0.14.5;
+            setAim((int) x, (int) y);
+            x -= 640;
+            y -= 400;
+            camera->cameraTransform(x, y, dz);
+            obj_position[0] = y+0.01;
+            obj_position[1] = x+0.03;
+            obj_position[2] = dz+0.05;
+            pieces[matchp].getPickingOrientation(obj_orientation);
+            return 0;
+        }
+}
+

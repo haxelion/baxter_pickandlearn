@@ -4,15 +4,7 @@
 #include "baxtercontroller.h"
 #include "camera.h"
 
-float distance(float p1[], float p2[], float o1[], float o2[])
-{
-    float d = 0;
-    for(int i = 0; i < 3; i++)
-        d += (p1[i]-p2[i])*(p1[i]-p2[i]);
-    for(int i = 0; i< 4; i++)
-        d += (o1[i]-o2[i])*(o1[i]-o2[i]);
-    return sqrt(d);
-}
+#define MAX_PASS 2
 
 int main(int argc, char **argv)
 {
@@ -78,100 +70,90 @@ int main(int argc, char **argv)
     state = 0;
     while(sorting)
     {
-        int matchs, matchp;
         float x, y, dz;
+        int pass;
         BaxterController::ITBInput input = robot->getInput();
         if(input == BaxterController::INPUT_HOME_CLICKED)
             sorting = false;
         if(state == 0)
-        {
-            robot->getPosition(position);
-            robot->getOrientation(orientation);
-            if(distance(position, obs_position, orientation, obs_orientation) < 0.01)
-                state = 1;
-            else
-                robot->moveTo(obs_position, obs_orientation);
-        }
-        if(state == 1)
+            robot->moveTo(obs_position, obs_orientation);
+        else if(state == 1)
+            if(robot->distanceToSetPosition() < 0.01)
+            {
+                pass = 1;
+                state = 2;
+            }
+        else if(state == 2)
         {
             camera->request(Camera::REQUEST_SHAPES);
-            state = 2;
+            state = 3;
         }
-        else if(state == 2 && camera->isResultAvailable())
+        else if(state == 3 && camera->isResultAvailable())
         {
             std::vector<std::vector<cv::Point> > *result = camera->getResult();
             if(result->size() == 0 || (*result)[0].size() == 0)
             {
                 std::cout << "No shape found" << std::endl;
-                state = 1;
+                state = 2;
             }
             else
             {
-                closestMatch(pieces, (*result), 0.05, matchp, matchs);
-                if(matchs == -1 || matchp == -1)
-                {
-                    std::cout << "No piece found." << std::endl;
-                    state = 1;
-                }
+                robot->getPosition(position);
+                if(camera->getClosestMatchApproach(result, pieces, position[2], obj_position, obj_orientation))
+                    state = 2;
                 else
                 {
-                    cv::Moments m = cv::moments((*result)[matchs]);
-                    robot->getPosition(position);
-                    x = m.m10/m.m00;
-                    y = m.m01/m.m00;
-                    std::cout << "Found at X: " << x << " Y: " << y << std::endl;
-                    dz = position[2]-pieces[matchp].getPickingHeight();
-                    camera->setAim((int) x, (int) y);
-                    x -= 640;
-                    y -= 400;
-                    camera->cameraTransform(x, y, dz);
-                    obj_position[0] = position[0]+y+0.01;
-                    obj_position[1] = position[1]+x+0.03;
-                    obj_position[2] = position[2]-dz+0.05;
-                    pieces[matchp].getPickingOrientation(obj_orientation);
-                    state = 3;
-                    if(robot->moveTo(obj_position, obj_orientation))
-                        state = 0;
+                    for(int i = 0; i < 3; i++)
+                        obj_position[i] +=  position[i];
+                    if(pass == MAX_PASS)
+                    {
+                        if(robot->moveTo(obj_position, obj_orientation))
+                            state = 2;
+                        else
+                            state = 4;
+                    }
+                    else if(robot->moveTo(obj_position, obs_orientation))
+                        state = 2;
+                    else
+                        state = 4;
                 }
             }
             delete result;
         }
-        else if(state == 3)
-        {
-            robot->getPosition(position);
-            robot->getOrientation(orientation);
-            if(distance(position, obj_position, orientation, obj_orientation) < 0.01)
-            {
-                state = 4;
-                obj_position[2] -= 0.05;
-                if(robot->moveTo(obj_position, obj_orientation))
-                    state = 0;
-            }
-        }
         else if(state == 4)
-        {
-            robot->getPosition(position);
-            robot->getOrientation(orientation);
-            if(distance(position, obj_position, orientation, obj_orientation) < 0.01)
+            if(robot->distanceToSetPosition() < 0.01)
+            {
+                pass++
+                if(pass<=MAX_PASS)
+                    state = 2;
+                else
+                    state = 5;
+            }
+       else if(state == 5)
+            if(robot->distanceToSetPosition() < 0.01)
             {
                 robot->grip();
                 ros::Duration(0.5).sleep();
                 obj_position[2] += dz;
-                state = 5;
+                state = 6;
                 if(robot->moveTo(obj_position, obj_orientation))
                     state = 0;
             }
-        }
-        else if (state == 5)
-        {
-            robot->getPosition(position);
-            robot->getOrientation(orientation);
-            if(distance(position, obj_position, orientation, obj_orientation) < 0.01)
+        else if(state == 6)
+            if(robot->distanceToSetPosition() < 0.01)
+            {
+                state = 7;
+                pieces[matchp].getDropPosition(obj_position);
+                pieces[matchp].getDropOrientation(obj_orientation);
+                if(robot->moveTo(obj_position, obj_position)
+                    state = 0;
+            }
+        else if (state == 7)
+            if(robot->distanceToSetPosition() < 0.01)
             {
                 robot->release();
                 state = 0;
             }
-        }
         ros::Duration(0.1).sleep();
     }
     spinner.stop();

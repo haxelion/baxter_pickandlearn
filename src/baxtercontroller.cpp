@@ -166,6 +166,13 @@ int BaxterController::moveTo(float position[], float orientation[])
 {
     baxter_core_msgs::SolvePositionIK srv;
     geometry_msgs::PoseStamped pose_stamped;
+    set_position[0] = position[0];
+    set_position[1] = position[1];
+    set_position[2] = position[2];
+    set_orientation[0] = orientation[0]
+    set_orientation[1] = orientation[1]
+    set_orientation[2] = orientation[2]
+    set_orientation[3] = orientation[3]
     pose_stamped.header.stamp = ros::Time::now();
     pose_stamped.header.frame_id = "base";
     pose_stamped.pose.position.x = position[0];
@@ -202,3 +209,19 @@ int BaxterController::move(float position[], float orientation[])
         p[i] = this->position[i] + position[i];
     return moveTo(p, orientation);
 }   
+
+void BaxterController::stop()
+{
+    has_to_move = false;
+}
+
+float BaxterController::distanceToSetPosition()
+{
+    float d = 0;
+    for(int i = 0; i < 3; i++)
+        d += (position[i]-set_position[i])*(position[i]-set_position[i]);
+    for(int i = 0; i < 4; i++)
+        d += (orientation[i]-set_orientation[i])*(orientation[i]-set_orientation[i]);
+    return sqrt(d);
+
+}
