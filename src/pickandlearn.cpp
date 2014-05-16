@@ -134,11 +134,17 @@ int main(int argc, char **argv)
             if(robot->distanceToSetPosition() < 0.01)
             {
                 pass++;
+                if(pass == 2)
+                {
+                    obj_position[0] += 0.05;
+                    obj_position[2] -= 0.05;
+                }
                 if(pass<=MAX_PASS)
                     state = 2;
                 else
                 {
                     state = 5;
+                    obj_position[0] += 0.05
                     obj_position[2] -= 0.05;
                     if(robot->moveTo(obj_position, obj_orientation))
                         state = 0;
