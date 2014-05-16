@@ -29,7 +29,7 @@ public:
     void cameraTransform(float &x, float &y, float dz);
     bool isResultAvailable();
     std::vector<std::vector<cv::Point> >* getResult();
-    void getClosestMatchApproach(std::vector<std::vector<cv::Point> > *result, pieces, float z, float obj_position[], float obj_orientation[]);
+    int getClosestMatchApproach(std::vector<std::vector<cv::Point> > *result, std::vector<Piece> &pieces, float z, float obj_position[], float obj_orientation[], int &match);
 
 private:
     cv_bridge::CvImagePtr cv_ptr;

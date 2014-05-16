@@ -128,3 +128,8 @@ void closestMatch(std::vector<Piece> &pieces, std::vector<std::vector<cv::Point>
         }
     }
 }
+
+cv::Moments Piece::getMoments()
+{
+    return cv::moments(shape);
+}

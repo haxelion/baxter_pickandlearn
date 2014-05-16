@@ -6,8 +6,8 @@ pieces(highlight)
     hmin = 0;
     hmax = 100;
     vmin = 30;
-    threshold1 = 50;
-    threshold2 = 50;
+    threshold1 = 20;
+    threshold2 = 40;
     minarea = 1000;
     request_status = STATUS_AVAILABLE;
     this->nh = nh;
@@ -164,29 +164,29 @@ void Camera::cameraTransform(float &x, float &y, float dz)
     y = (y/400)*0.14*(dz/0.145);
 }
 
-int Camera::getClosestMatchApproach(std::vector<std::vector<cv::Point> > *result, pieces, float z, float obj_position[], float obj_orientation[])
+int Camera::getClosestMatchApproach(std::vector<std::vector<cv::Point> > *result, std::vector<Piece> &pieces, float z, float obj_position[], float obj_orientation[], int &match)
 {
-        int matchs, matchp, x, y;
-        closestMatch(pieces, (*result), 0.05, matchp, matchs);
+        int matchs, matchp;
+        float dz, x, y;
+        closestMatch(pieces, (*result), 0.1, matchp, matchs);
         if(matchs == -1 || matchp == -1)
-        {
-            std::cout << "No piece found." << std::endl;
             return 1;
-        }
         else
         {
-            cv::Moments m = cv::moments((*result)[matchs]);
-            x = m.m10/m.m00;
-            y = m.m01/m.m00;
-            dz = z-pieces[matchp].getPickingHeight()+0.14.5;
+            cv::Moments m1 = cv::moments((*result)[matchs]);
+            cv::Moments m2 = pieces[matchp].getMoments();
+            x = m1.m10/m1.m00;
+            y = m1.m01/m1.m00;
+            dz = z-pieces[matchp].getPickingHeight();
             setAim((int) x, (int) y);
-            x -= 640;
-            y -= 400;
-            camera->cameraTransform(x, y, dz);
-            obj_position[0] = y+0.01;
-            obj_position[1] = x+0.03;
-            obj_position[2] = dz+0.05;
+            x -= m2.m10/m2.m00;
+            y -= m2.m01/m2.m00;
+            cameraTransform(x, y, dz);
+            obj_position[0] = y;
+            obj_position[1] = x;
+            obj_position[2] = -dz + 0.05;
             pieces[matchp].getPickingOrientation(obj_orientation);
+            match = matchp;
             return 0;
         }
 }

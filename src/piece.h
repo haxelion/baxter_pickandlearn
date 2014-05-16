@@ -13,6 +13,7 @@ public:
     void getPickingOrientation(float picking_orientation[]);
     void getDropPosition(float drop_position[]);
     void getDropOrientation(float drop_orientation[]);
+    cv::Moments getMoments();
     std::string getName();
     std::string serialize();
     void deserialize(std::string s);

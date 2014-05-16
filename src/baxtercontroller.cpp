@@ -169,10 +169,10 @@ int BaxterController::moveTo(float position[], float orientation[])
     set_position[0] = position[0];
     set_position[1] = position[1];
     set_position[2] = position[2];
-    set_orientation[0] = orientation[0]
-    set_orientation[1] = orientation[1]
-    set_orientation[2] = orientation[2]
-    set_orientation[3] = orientation[3]
+    set_orientation[0] = orientation[0];
+    set_orientation[1] = orientation[1];
+    set_orientation[2] = orientation[2];
+    set_orientation[3] = orientation[3];
     pose_stamped.header.stamp = ros::Time::now();
     pose_stamped.header.frame_id = "base";
     pose_stamped.pose.position.x = position[0];
@@ -223,5 +223,4 @@ float BaxterController::distanceToSetPosition()
     for(int i = 0; i < 4; i++)
         d += (orientation[i]-set_orientation[i])*(orientation[i]-set_orientation[i]);
     return sqrt(d);
-
 }
