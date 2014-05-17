@@ -160,8 +160,8 @@ void Camera::cameraTransform(float &x, float &y, float dz)
     x = 50 cm
     y = 28 cm
     */
-    x = (x/640)*0.25*(dz/0.145);
-    y = (y/400)*0.14*(dz/0.145);
+    x = (x/640)*0.22*(dz/0.145);
+    y = (y/400)*0.12*(dz/0.145);
 }
 
 int Camera::getClosestMatchApproach(std::vector<std::vector<cv::Point> > *result, std::vector<Piece> &pieces, float z, float obj_position[], float obj_orientation[], int &match)
@@ -181,10 +181,10 @@ int Camera::getClosestMatchApproach(std::vector<std::vector<cv::Point> > *result
             setAim((int) x, (int) y);
             x -= m2.m10/m2.m00;
             y -= m2.m01/m2.m00;
-            cameraTransform(x, y, dz+0.1);
-            obj_position[0] = y-0.05;
+            cameraTransform(x, y, dz+0.08);
+            obj_position[0] = y;
             obj_position[1] = x;
-            obj_position[2] = -dz + 0.1;
+            obj_position[2] = -dz;
             pieces[matchp].getPickingOrientation(obj_orientation);
             match = matchp;
             return 0;

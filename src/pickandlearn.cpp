@@ -4,7 +4,7 @@
 #include "baxtercontroller.h"
 #include "camera.h"
 
-#define MAX_PASS 10
+#define MAX_PASS 4
 
 int main(int argc, char **argv)
 {
@@ -16,12 +16,13 @@ int main(int argc, char **argv)
     BaxterController *robot = new BaxterController(nh);
     Camera  *camera =  new Camera(Camera::RIGHT_HAND, nh, pieces);
     int state = 0;
-    float obs_position[3] = {0.7,0,0.15};
+    float obs_position[3] = {0.55, -0.4, 0.15};
     float obs_orientation[4] = {1,0,0,0};
     float position[3], obj_position[3], orientation[4], obj_orientation[4];
     spinner.start();
     // Learning
     bool learning = true;
+    robot->release();
     while(learning)
     {
         BaxterController::ITBInput input = robot->getInput();
@@ -121,10 +122,16 @@ int main(int argc, char **argv)
                         else
                             state = 4;
                     }
-                    else if(robot->moveTo(obj_position, obs_orientation))
-                        state = 2;
                     else
-                        state = 4;
+                    {
+                        // Smooth approach
+                        obj_position[0] -= 0.1 - 0.08*pass/MAX_PASS;
+                        obj_position[2] += 0.1 - 0.08*pass/MAX_PASS;
+                        if(robot->moveTo(obj_position, obs_orientation))
+                            state = 2;
+                        else
+                            state = 4;
+                    }
                 }
             }
             delete result;
@@ -134,18 +141,11 @@ int main(int argc, char **argv)
             if(robot->distanceToSetPosition() < 0.01)
             {
                 pass++;
-                if(pass == 2)
-                {
-                    obj_position[0] += 0.05;
-                    obj_position[2] -= 0.05;
-                }
                 if(pass<=MAX_PASS)
                     state = 2;
                 else
                 {
                     state = 5;
-                    obj_position[0] += 0.05
-                    obj_position[2] -= 0.05;
                     if(robot->moveTo(obj_position, obj_orientation))
                         state = 0;
                 }
