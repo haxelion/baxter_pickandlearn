@@ -26,8 +26,8 @@ BaxterController::BaxterController(ros::NodeHandle nh)
     has_to_move = false;
     last_input_time = clock();
     this->nh = nh;
-    std::cout << std::setw(80) << std::left << "Registering ITB callbacks: ";
-    itb_sub = nh.subscribe("/robot/itb/right_itb/state", 2, &BaxterController::itbCallback, this);
+    std::cout << std::setw(80) << std::left << "Registering Navigator callbacks: ";
+    itb_sub = nh.subscribe("robot/navigators/right_navigator/state", 2, &BaxterController::navigatorCallback, this);
     if(itb_sub == NULL)
     {
         std::cout << std::right << "\033[1;31m[Failed]\033[0m" << std::endl;
@@ -88,7 +88,7 @@ BaxterController::~BaxterController()
 {
 }
 
-void BaxterController::itbCallback(const baxter_core_msgs::ITBStateConstPtr &msg)
+void BaxterController::navigatorCallback(const baxter_core_msgs::NavigatorStateConstPtr &msg)
 {
     if(clock() - last_input_time > INPUT_BLOCKING_TIME)
     {
